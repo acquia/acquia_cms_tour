@@ -47,7 +47,25 @@ class WelcomeModalController extends ControllerBase {
   /**
    * Callback for opening the welcome modal form.
    */
-  public function openModalForm() {
+  public function openStarterModalForm() {
+    $response = new AjaxResponse();
+
+    // Get the modal form using the form builder.
+    $modal_form = $this->formBuilder->getForm('Drupal\acquia_cms_tour\Form\StarterKitSelectionForm');
+    $modal_options = [
+      'dialogClass' => 'acms-welcome-modal',
+      'width' => 1000,
+    ];
+    // Add an AJAX command to open a modal dialog with the form as the content.
+    $response->addCommand(new OpenModalDialogCommand('', $modal_form, $modal_options));
+
+    return $response;
+  }
+
+  /**
+   * Callback for opening the welcome modal form.
+   */
+  public function openWelcomeModalForm() {
     $response = new AjaxResponse();
 
     // Get the modal form using the form builder.
@@ -61,5 +79,4 @@ class WelcomeModalController extends ControllerBase {
 
     return $response;
   }
-
 }
