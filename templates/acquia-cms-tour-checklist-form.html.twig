@@ -17,7 +17,8 @@
       The configuration dashboard/wizard setup will help you setup the pre-requisites.
       Please note, not all modules in ACMS are required by default, and some optional modules
       are left disabled on install. A checklist is provided to help you keep track of the tasks
-      needed to complete configuration."|t
+      needed to complete configuration. Also, you can install the Starter-kit by clicking on
+      Starter Kit Set-up button (if not done already)."|t
       }}
     {% else %}
       <h3>
@@ -32,8 +33,15 @@
         <li><a href="https://www.drupal.org/project/acquia_telemetry">Acquia Telemetry</a></li>
         <li><a href="https://github.com/acquia/cohesion">Site Studio</a> etc.</li>
       </ul>
+      <h3>
+        <i>
+          {{ "Meanwhile, You can start setting up the Starter kit by clicking on button - Starter kit set-up (if not done already)."|t }}
+        </i>
+      </h3>
     {% endif %}
   </div>
+  <div class="help-text">{{ form.starter_help_text }}</div>
+  <div class="starter-wizard">{{ form.starter_modal_link }}</div>
   <div class="wizard">{{ form.modal_link }}</div>
 </div>
 

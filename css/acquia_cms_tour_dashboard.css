@@ -5,6 +5,12 @@
   padding-top: 30px;
   padding-bottom: 30px;
 }
+.tour-dashboard-table th {
+  text-align: center;
+}
+.tour-dashboard-table td {
+  text-align: center;
+}
 .acms-welcome-modal.ui-dialog .ui-dialog-titlebar {
   padding: 0;
   color: #fff;
@@ -123,15 +129,19 @@
   width: 80%;
 }
 .section-top .wizard {
+  right: 11rem;
   position: absolute;
+}
+.section-top .starter-wizard {
   right: 2.75rem;
+  position: absolute;
 }
 
 @media screen and (max-width: 767px) {
   .section-top {
     flex-direction: column;
   }
-  .section-top .wizard {
+  .section-top .wizard, .section-top .starter-wizard {
     position: inherit;
   }
 }
