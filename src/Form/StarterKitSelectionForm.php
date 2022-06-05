@@ -121,7 +121,7 @@ class StarterkitSelectionForm extends FormBase {
       'acquia_cms_low_code' => 'Acquia CMS Low Code',
       'acquia_cms_demo' => 'Acquia CMS Demo',
       'acquia_cms_standard' => 'Acquia CMS Standard',
-      'acquia_cms_headless' => 'Acquia CMS Headless'  
+      'acquia_cms_headless' => 'Acquia CMS Headless'
     ];
    // Next, loop through the $kits array
    foreach ($kits as $kit => $description) {
@@ -144,7 +144,7 @@ class StarterkitSelectionForm extends FormBase {
     ];
     $form['tour-dashboard']['message'] = [
         '#type' => 'markup',
-        '#markup' => '<p>' . $this->t("Acquia CMS Starter Kits can be used to install ACMS as per the requirement i.e. with or without content model or Site Studio. 
+        '#markup' => '<p>' . $this->t("Acquia CMS Starter kits can be used to install ACMS as per the requirement i.e. with or without content model or Site Studio. 
         You can either select the starter kit now or do it later. Doing this would enable the required modules for the selected starter kit.") . '</p>',
     ];
     $form['tour-dashboard']['starter_kit'] = [
@@ -155,7 +155,7 @@ class StarterkitSelectionForm extends FormBase {
           'tour-dashboard',
         ],
       ],
-      '#default_value' => $this->state->get('starter_kit_selected'),
+      '#default_value' => $this->state->get('acquia_cms.starter_kit'),
     ];
     $form['tour-dashboard']['table'] = [
       '#type' => 'table',
@@ -186,6 +186,7 @@ class StarterkitSelectionForm extends FormBase {
           'setup-manually',
         ],
       ],
+      '#submit' => ['::submitCancelWizard'],
     ];
     $form['#prefix'] = '<div id=' . $this->getFormWrapper() . '>';
     $form['#suffix'] = '</div>';
@@ -202,7 +203,7 @@ class StarterkitSelectionForm extends FormBase {
     $form_state->setValue(['starter_kit'], $starter_kit); 
     if ($starter_kit) {
       $this->state->set('hide_starter_kit_intro_dialog', TRUE);
-      $this->state->set('starter_kit_selected', $starter_kit);
+      $this->state->set('acquia_cms.starter_kit', $starter_kit);
       $this->enableModules($starter_kit);
     }
     $this->messenger()->addStatus('The required starter kit has been installed. Also, the related modules & themes have been enabled.');
@@ -213,12 +214,20 @@ class StarterkitSelectionForm extends FormBase {
   /**
    * {@inheritdoc}
    */
+  public function submitCancelWizard(array &$form, FormStateInterface $form_state) {
+    $this->state->set('hide_starter_kit_intro_dialog', TRUE);
+    $form_state->setRedirect('acquia_cms_tour.enabled_modules');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $starter_kit = $form_state->getValue(['starter_kit']);
     $form_state->setValue(['starter_kit'], $starter_kit);
     if ($starter_kit) {
       $this->state->set('hide_starter_kit_intro_dialog', TRUE);
-      $this->state->set('starter_kit_selected', $starter_kit);
+      $this->state->set('acquia_cms.starter_kit', $starter_kit);
       $this->enableModules($starter_kit);
     }
     $this->messenger()->addStatus('The required starter kit has been installed. Also, the related modules & themes have been enabled.');
@@ -237,7 +246,7 @@ class StarterkitSelectionForm extends FormBase {
       'admin'   => 'acquia_claro',
       'default' => 'olivero',  
     ];
-    // Case for selecting modules as per starter kit selected.
+    $enableModules = [];
     switch ($starter_kit) {
       case 'acquia_cms_low_code':
         $enableModules = ['acquia_cms_page'];
@@ -249,7 +258,8 @@ class StarterkitSelectionForm extends FormBase {
       case 'acquia_cms_standard':
         $enableModules = ['acquia_cms_article', 'acquia_cms_event', 'acquia_cms_video'];
         $enableThemes = [
-          'admin'   => 'acquia_claro',  
+          'admin'   => 'acquia_claro',
+          'default' => 'olivero',
         ];
         break;
       case 'acquia_cms_demo':
@@ -262,22 +272,29 @@ class StarterkitSelectionForm extends FormBase {
       case 'acquia_cms_headless':
         $enableModules = ['acquia_cms_headless'];
         $enableThemes = [
-          'admin'   => 'acquia_claro',  
+          'admin'   => 'acquia_claro',
+          'default' => 'olivero',
         ];
-        break;  
+        break;
+      case 'acquia_cms_minimal':
+        $enableModules = ['acquia_cms_search', 'acquia_cms_toolbar', 'acquia_cms_tour'];
+        $enableThemes = [
+          'admin'   => 'acquia_claro',
+          'default' => 'olivero',
+        ];
       default:
         $enableThemes = [
           'admin'   => 'acquia_claro',
           'default' => 'olivero',  
         ];
+        $enableModules = ['acquia_cms_search', 'acquia_cms_toolbar', 'acquia_cms_tour'];
     }
-    // Installer service to install modules.
-    $this->moduleInstaller->install($enableModules);
-    // Installer service to install themes.
+    if (!empty($enableModules)) {
+      $this->moduleInstaller->install($enableModules);
+    }
     foreach ($enableThemes as $key => $theme) {
       $this->themeInstaller->install([$theme]);
     }
-    // Enable the installed themes.
     $this->configFactory
       ->getEditable('system.theme')
       ->set('default', $enableThemes['default'])

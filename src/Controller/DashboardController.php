@@ -113,7 +113,7 @@ final class DashboardController extends ControllerBase {
     $show_welcome_dialog = $this->state->get('show_welcome_modal', TRUE);
     $show_wizard_modal = $this->state->get('show_wizard_modal', TRUE);
     $wizard_completed = $this->state->get('wizard_completed', FALSE);
-    $selected_starter_kit = $this->state->get('starter_kit_selected', FALSE);
+    $selected_starter_kit = $this->state->get('acquia_cms.starter_kit');
     $hide_starter_kit_intro_dialog = $this->state->get('hide_starter_kit_intro_dialog');
     $starter_link_url = Url::fromRoute('acquia_cms_tour.starter_kit_welcome_modal_form'); 
     $link_url = Url::fromRoute('acquia_cms_tour.welcome_modal_form');
@@ -166,7 +166,7 @@ final class DashboardController extends ControllerBase {
     }
     $form['starter_modal_link'] = [
       '#type' => 'link',
-      '#title' => 'Starter Kit set-up',
+      '#title' => $this->t('Starter kit set-up'),
       '#url' => $starter_link_url,
     ];
     
@@ -181,7 +181,7 @@ final class DashboardController extends ControllerBase {
       ];
       $form['modal_link'] = [
         '#type' => 'link',
-        '#title' => 'Wizard set-up',
+        '#title' => $this->t('Wizard set-up'),
         '#url' => $link_url,
       ];
     }
@@ -209,66 +209,6 @@ final class DashboardController extends ControllerBase {
       ],
     ];
     return $build;
-  }
-
-    /**
-   * Handler for enabling modules.
-   * 
-   * @param string $starter_kit
-   *   Variable holding the starter kit selected.
-   */
-  public function enableModules(string $starter_kit) {
-    exit;
-    $enableThemes = [
-      'admin'   => 'acquia_claro',
-      'default' => 'olivero',  
-    ];
-    switch ($starter_kit) {
-      case 'acquia_cms_low_code':
-        $enableModules = ['acquia_cms_page'];
-        $enableThemes = [
-          'admin'   => 'acquia_claro',
-          'default' => 'cohesion_theme', 
-        ];
-        break;
-      case 'acquia_cms_standard':
-        $enableModules = ['acquia_cms_article', 'acquia_cms_event', 'acquia_cms_video'];
-        $enableThemes = [
-          'admin'   => 'acquia_claro',  
-        ];
-        break;
-      case 'acquia_cms_demo':
-        $enableModules = ['acquia_cms_starter'];
-        $enableThemes = [
-          'admin'   => 'acquia_claro',
-          'default' => 'cohesion_theme',
-        ];
-        break;
-      case 'acquia_cms_headless':
-        $enableModules = ['acquia_cms_headless'];
-        $enableThemes = [
-          'admin'   => 'acquia_claro',  
-        ];
-        break;  
-      default:
-        $enableModules = [];
-        $enableThemes = [
-          'admin'   => 'acquia_claro',
-          'default' => 'olivero',  
-        ];
-    }
-    $this->moduleInstaller->install($enableModules);
-    foreach ($enableThemes as $key => $theme) {
-      $this->themeInstaller->install([$theme]);
-    }
-    $this->configFactory
-      ->getEditable('system.theme')
-      ->set('default', $enableThemes['default'])
-      ->save();
-    $this->configFactory
-      ->getEditable('system.theme')
-      ->set('admin', $enableThemes['admin'])
-      ->save();  
   }
 
 }
