@@ -110,17 +110,13 @@ class StarterkitSelectionForm extends FormBase {
       'description' => t('Description'),
     ];
     $kits = [
-      'Acquia CMS Minimal' => t('Acquia CMS in a blank slate, ideal for custom PS.'),
-      'Acquia CMS Low Code' => t('ACMS with Site Studio but no content opinion.'),
-      'Acquia CMS Demo' => t('Low-code demonstration of ACMS with default content.'),
-      'Acquia CMS Standard' => t('ACMS with a starter content model, no demo content, classic custom themes.'),
-      'Acquia CMS Headless' => t('ACMS with headless functionality.'),
+      'Acquia CMS Community' => t('Acquia CMS in a blank slate, ideal for custom PS.'),
+      'Acquia CMS Enterprise (Low Code)' => t('Acquia CMS with Site Studio but no content opinion.'),
+      'Acquia CMS Headless' => t('Acquia CMS with headless functionality.'),
     ];
     $starter_kit_options = [
-      'acquia_cms_minimal' => 'Acquia CMS Minimal',
-      'acquia_cms_low_code' => 'Acquia CMS Low Code',
-      'acquia_cms_demo' => 'Acquia CMS Demo',
-      'acquia_cms_standard' => 'Acquia CMS Standard',
+      'acquia_cms_community' => 'Acquia CMS Community',
+      'acquia_cms_low_code' => 'Acquia CMS Enterprise (Low Code)',
       'acquia_cms_headless' => 'Acquia CMS Headless'
     ];
    // Next, loop through the $kits array
@@ -144,7 +140,7 @@ class StarterkitSelectionForm extends FormBase {
     ];
     $form['tour-dashboard']['message'] = [
         '#type' => 'markup',
-        '#markup' => '<p>' . $this->t("Acquia CMS Starter kits can be used to install ACMS as per the requirement i.e. with or without content model or Site Studio. 
+        '#markup' => '<p>' . $this->t("Acquia CMS Starter kits can be used to install Acquia CMS as per the requirement i.e. with or without content model or Site Studio.
         You can either select the starter kit now or do it later. Doing this would enable the required modules for the selected starter kit.") . '</p>',
     ];
     $form['tour-dashboard']['starter_kit'] = [
@@ -249,24 +245,17 @@ class StarterkitSelectionForm extends FormBase {
     $enableModules = [];
     switch ($starter_kit) {
       case 'acquia_cms_low_code':
-        $enableModules = ['acquia_cms_page'];
+        $enableModules = ['acquia_cms_page', 'acquia_cms_site_studio'];
         $enableThemes = [
           'admin'   => 'acquia_claro',
           'default' => 'cohesion_theme', 
         ];
         break;
-      case 'acquia_cms_standard':
-        $enableModules = ['acquia_cms_article', 'acquia_cms_event', 'acquia_cms_video'];
+      case 'acquia_cms_community':
+        $enableModules = ['acquia_cms_article', 'acquia_cms_event', 'acquia_cms_video', 'acquia_cms_page'];
         $enableThemes = [
           'admin'   => 'acquia_claro',
           'default' => 'olivero',
-        ];
-        break;
-      case 'acquia_cms_demo':
-        $enableModules = ['acquia_cms_starter'];
-        $enableThemes = [
-          'admin'   => 'acquia_claro',
-          'default' => 'cohesion_theme',
         ];
         break;
       case 'acquia_cms_headless':
@@ -276,12 +265,6 @@ class StarterkitSelectionForm extends FormBase {
           'default' => 'olivero',
         ];
         break;
-      case 'acquia_cms_minimal':
-        $enableModules = ['acquia_cms_search', 'acquia_cms_toolbar', 'acquia_cms_tour'];
-        $enableThemes = [
-          'admin'   => 'acquia_claro',
-          'default' => 'olivero',
-        ];
       default:
         $enableThemes = [
           'admin'   => 'acquia_claro',
