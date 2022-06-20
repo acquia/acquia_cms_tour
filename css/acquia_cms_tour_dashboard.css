@@ -131,6 +131,7 @@
 .section-top .wizard {
   right: 11rem;
   position: absolute;
+  margin-right: 15px;
 }
 .section-top .starter-wizard {
   right: 2.75rem;

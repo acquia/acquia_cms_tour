@@ -148,7 +148,7 @@ final class DashboardController extends ControllerBase {
         'data-dialog-type' => 'modal',
         'data-dialog-options' => Json::encode([
           'width' => 912,
-          'dialogClass' => 'acms-starterkit-wizard',
+          'dialogClass' => 'acms-starter-kit-wizard',
         ]),
       ],
     ]);
