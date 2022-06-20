@@ -40,6 +40,11 @@ function acquia_cms_tour_theme() {
         'current_step' => NULL,
       ],
     ],
+    'acquia_cms_starter_kit_title_markup' => [
+      'variables' => [
+        'label' => NULL,
+      ],
+    ],
   ];
 }
 
