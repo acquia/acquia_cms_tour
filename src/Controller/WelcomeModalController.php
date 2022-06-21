@@ -51,7 +51,7 @@ class WelcomeModalController extends ControllerBase {
     $response = new AjaxResponse();
 
     // Get the modal form using the form builder.
-    $modal_form = $this->formBuilder->getForm('Drupal\acquia_cms_tour\Form\SelectionWizardForm');
+    $modal_form = $this->formBuilder->getForm('Drupal\acquia_cms_tour\Form\StarterKitSelectionWizardForm');
     $modal_options = [
       'dialogClass' => 'acms-starter-kit-wizard',
       'width' => 1000,
