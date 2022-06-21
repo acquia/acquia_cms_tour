@@ -57,12 +57,12 @@ class StarterKitSelectionForm extends AcquiaCMSStarterKitBase {
       'description' => t('Description'),
     ];
     $kits = [
-      'Acquia CMS Low Code (Enterprise)' => t('Acquia CMS with Site Studio and UIkit.'),
+      'Acquia CMS Enterprise low-code' => t('Acquia CMS with Site Studio and UIkit.'),
       'Acquia CMS Community' => t('Acquia CMS with required modules.'),
       'Acquia CMS Headless' => t('Acquia CMS with headless functionality.'),
     ];
     $starter_kit_options = [
-      'acquia_cms_low_code' => 'Acquia CMS Low Code (Enterprise)',
+      'acquia_cms_enterprise_low_code' => 'Acquia CMS Enterprise low-code',
       'acquia_cms_community' => 'Acquia CMS Community',
       'acquia_cms_headless' => 'Acquia CMS Headless'
     ];
@@ -82,7 +82,7 @@ class StarterKitSelectionForm extends AcquiaCMSStarterKitBase {
 
     $form[$form_name]['message'] = [
         '#type' => 'markup',
-        '#markup' => '<p>' . $this->t("Acquia CMS starter kits provide different starting points for your site depending on your requirements. Select a from one of the starter kits below to enable the modules.") . '</p>',
+        '#markup' => '<p>' . $this->t("Acquia CMS starter kits provide different starting points for your site depending on your requirements. Select from one of the starter kits below to enable the modules.") . '</p>',
     ];
     $form[$form_name]['message']['table'] = [
       '#type' => 'table',

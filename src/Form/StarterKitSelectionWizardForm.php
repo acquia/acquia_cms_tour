@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Provides a Acquia Tour form.
  */
-class SelectionWizardForm extends FormBase {
+class StarterKitSelectionWizardForm extends FormBase {
 
   /**
    * All steps of the multistep form.
@@ -353,7 +353,6 @@ class SelectionWizardForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $formController = $this->getCurrentFormController()['class'];
     $this->classResolver->getInstanceFromDefinition($formController)->submitForm($form, $form_state);
-    $this->state->set('wizard_completed', TRUE);
     $this->state->set('current_wizard_step', 'completed');
     $this->messenger()->addStatus($this->t('The configuration options have been saved.'));
     $form_state->setRedirect('acquia_cms_tour.enabled_modules');

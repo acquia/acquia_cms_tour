@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @AcquiaCmsStarterKit(
  *   id = "acquia_cms_starter_kit_config",
- *   label = @Translation("Starter Kit Configure"),
+ *   label = @Translation("Extend Starter Kit"),
  *   weight = 2
  * )
  */
@@ -53,19 +53,19 @@ class StarterKitConfigForm extends AcquiaCMSStarterKitBase {
     $form_name = $this->form_name;
     $form[$form_name] = [
       '#type' => 'details',
-      '#title' => $this->t('Starter Kit Configure'),
+      '#title' => $this->t('Extend Starter Kit'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     ];
     $form[$form_name]['demo'] = [
       '#type' => 'select',
-      '#title' => $this->t('Do you want a demo with demo content (yes/no) ?'),
+      '#title' => $this->t('Do you want to enable demo content?'),
       '#options' => ['none' => 'Please select', 'No' => 'No', 'Yes' => 'Yes'],
       '#default_value' => $this->state->get('acquia_cms.starter_kit_demo'),
     ];
     $form[$form_name]['content_model'] = [
       '#type' => 'select',
-      '#title' => $this->t('Do you want to include the Content Model (yes/no) ?'),
+      '#title' => $this->t('Do you want to enable the content model?'),
       '#options' => ['none' => 'Please select', 'No' => 'No', 'Yes' => 'Yes'],
       '#default_value' => $this->state->get('acquia_cms.starter_kit_content_model'),
       '#states' => [

@@ -115,7 +115,7 @@ final class DashboardController extends ControllerBase {
     $wizard_completed = $this->state->get('wizard_completed', FALSE);
     $selected_starter_kit = $this->state->get('acquia_cms.starter_kit');
     $hide_starter_kit_intro_dialog = $this->state->get('hide_starter_kit_intro_dialog');
-    $starter_link_url = Url::fromRoute('acquia_cms_tour.starter_kit_welcome_modal_form'); 
+    $starter_link_url = Url::fromRoute('acquia_cms_tour.starter_kit_welcome_modal_form');
     $link_url = Url::fromRoute('acquia_cms_tour.welcome_modal_form');
     if (!$show_welcome_dialog) {
       $link_url = Url::fromRoute('acquia_cms_tour.installation_wizard');
@@ -152,7 +152,7 @@ final class DashboardController extends ControllerBase {
         ]),
       ],
     ]);
-    
+
     // Delegate building each section using plugin class.
     foreach ($this->acquiaCmsTourManager->getDefinitions() as $definition) {
       $instance_definition = $this->classResolver->getInstanceFromDefinition($definition['class']);
@@ -169,7 +169,7 @@ final class DashboardController extends ControllerBase {
       '#title' => $this->t('Starter kit set-up'),
       '#url' => $starter_link_url,
     ];
-    
+
     if ($total > 0) {
       $form['help_text'] = [
         '#type' => 'markup',
@@ -205,7 +205,7 @@ final class DashboardController extends ControllerBase {
         'show_wizard_modal' => $show_wizard_modal,
         'hide_starter_kit_wizard_modal' => $hide_starter_kit_intro_dialog,
         'wizard_completed' => $wizard_completed,
-        'starter_kit_selected' => $selected_starter_kit,
+        'selected_starter_kit' => $selected_starter_kit,
       ],
     ];
     return $build;
