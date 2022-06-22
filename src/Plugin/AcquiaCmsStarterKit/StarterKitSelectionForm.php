@@ -5,7 +5,7 @@ namespace Drupal\acquia_cms_tour\Plugin\AcquiaCmsStarterKit;
 use Drupal\acquia_cms_tour\Form\AcquiaCMSStarterKitBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\geocoder\GeocoderProviderInterface;
+use Drupal\Core\Extension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -98,6 +98,8 @@ class StarterKitSelectionForm extends AcquiaCMSStarterKitBase {
       '#type' => 'select',
       '#options' => $starter_kit_options,
       '#default_value' => $this->state->get('acquia_cms.starter_kit'),
+      '#prefix' => '<div class= "dashboard-fields-wrapper">',
+      '#suffix' => "</div>",
     ];
     $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
     return $form;

@@ -210,7 +210,7 @@ class StarterKitSelectionWizardForm extends FormBase {
       ];
     }
 
-    // Do not show 'next' button on the last step.
+    // Do not show 'Save & continue' button on the last step.
     if (!$this->isCurrentStepLast()) {
       $actions['next'] = [
         '#type' => 'submit',
@@ -462,8 +462,8 @@ class StarterKitSelectionWizardForm extends FormBase {
   /**
    * Helper method for adding title markup.
    *
-   * @param string $module_title
-   *   The module human-readable name.
+   * @param string $label
+   *   The human-readable name.
    *
    * @return string
    *   The rendered array defining the markup of the title.
