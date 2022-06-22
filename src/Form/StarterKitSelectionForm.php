@@ -115,7 +115,7 @@ class StarterkitSelectionForm extends FormBase {
       'Acquia CMS Headless' => t('Acquia CMS with headless functionality.'),
     ];
     $starter_kit_options = [
-      'acquia_cms_low_code' => 'Acquia CMS Low Code (Enterprise)',
+      'acquia_cms_enterprise_low_code' => 'Acquia CMS Low Code (Enterprise)',
       'acquia_cms_community' => 'Acquia CMS Community',
       'acquia_cms_headless' => 'Acquia CMS Headless'
     ];

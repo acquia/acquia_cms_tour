@@ -61,12 +61,36 @@ class StarterKitService {
    * @param string $content_model
    *   Variable holding the content model option selected.
    */
-  public function enableModules(string $starter_kit, string $demo_question, string $content_model) {
-    $enableThemes = [
-      'admin'   => 'acquia_claro',
-      'default' => 'olivero',
-    ];
-    $enableModules = [];
+  public function enableModules(string $starter_kit, string $demo_question = NULL, string $content_model = NULL) {
+    $modulesAndThemes = $this->getModulesAndThemes($starter_kit, $demo_question, $content_model);
+    if (!empty($modulesAndThemes['enableModules'])) {
+      $this->moduleInstaller->install($modulesAndThemes['enableModules']);
+    }
+    foreach ($modulesAndThemes['enableThemes'] as $key => $theme) {
+      $this->themeInstaller->install([$theme]);
+    }
+    $this->configFactory
+      ->getEditable('system.theme')
+      ->set('default', $modulesAndThemes['enableThemes']['default'])
+      ->save();
+    $this->configFactory
+      ->getEditable('system.theme')
+      ->set('admin', $modulesAndThemes['enableThemes']['admin'])
+      ->save();
+  }
+
+  /**
+   * Handler for enabling modules.
+   *
+   * @param string $starter_kit
+   *   Variable holding the starter kit selected.
+   * @param string $demo_question
+   *   Variable holding the demo question option selected.
+   * @param string $content_model
+   *   Variable holding the content model option selected.
+   */
+  public function getModulesAndThemes(string $starter_kit, string $demo_question = NULL, string $content_model = NULL) {
+    $enableModules = $enableThemes = [];
     switch ($starter_kit) {
       case 'acquia_cms_enterprise_low_code':
         $enableModules = [
@@ -125,20 +149,34 @@ class StarterKitService {
         ],
       );
     }
-    if (!empty($enableModules)) {
-      $this->moduleInstaller->install($enableModules);
+    return [
+      'enableModules' => $enableModules,
+      'enableThemes' => $enableThemes
+    ];
+  }
+
+  /**
+   * Handler for enabling modules.
+   *
+   * @param string $starter_kit
+   *   Variable holding the starter kit selected.
+   * @param string $demo_question
+   *   Variable holding the demo question option selected.
+   * @param string $content_model
+   *   Variable holding the content model option selected.
+   */
+  public function getMissingModules(string $starter_kit, string $demo_question = NULL, string $content_model = NULL) {
+    $modulesAndThemes = \Drupal::service('acquia_cms_tour.starter_kit')->getModulesAndThemes($starter_kit, $demo_question, $content_model);
+    $modules = $modulesAndThemes['enableModules'];
+    \Drupal::logger('acms modules')->info('<pre>'.print_r($modules,TRUE).'</pre>');
+    $moduleList = array_keys(\Drupal::service('extension.list.module')->getList());
+    $missingModules = implode(', ',array_diff($modules,$moduleList)) ?? '';
+    \Drupal::logger('acms modules')->info('<pre>'.print_r($missingModules,TRUE).'</pre>');
+    if($missingModules){
+      $missingModules = 'drupal/' . $missingModules;
+      $missingModules = str_replace(', ',' drupal/',$missingModules);
     }
-    foreach ($enableThemes as $key => $theme) {
-      $this->themeInstaller->install([$theme]);
-    }
-    $this->configFactory
-      ->getEditable('system.theme')
-      ->set('default', $enableThemes['default'])
-      ->save();
-    $this->configFactory
-      ->getEditable('system.theme')
-      ->set('admin', $enableThemes['admin'])
-      ->save();
+    return $missingModules;
   }
 
 }
