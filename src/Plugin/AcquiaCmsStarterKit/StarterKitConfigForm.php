@@ -68,13 +68,11 @@ class StarterKitConfigForm extends AcquiaCMSStarterKitBase {
       '#type' => 'select',
       '#title' => $this->t('Do you want to enable demo content?'),
       '#options' => ['none' => 'Please select', 'No' => 'No', 'Yes' => 'Yes'],
-      '#default_value' => $this->state->get('acquia_cms.starter_kit_demo'),
     ];
     $form[$form_name]['content_model'] = [
       '#type' => 'select',
       '#title' => $this->t('Do you want to enable the content model?'),
       '#options' => ['none' => 'Please select', 'No' => 'No', 'Yes' => 'Yes'],
-      '#default_value' => $this->state->get('acquia_cms.starter_kit_content_model'),
       '#states' => [
         'visible' => [
           ':input[name="demo"]' => ['value' => 'No'],
@@ -88,22 +86,27 @@ class StarterKitConfigForm extends AcquiaCMSStarterKitBase {
       '#prefix' => '<div class= "dashboard-fields-wrapper">',
       '#suffix' => "</div>",
     ];
+    $message = "<div class='messages messages--error'><p>It seems that the
+    following modules are missing from the codebase.</p> <p>We suggest running
+    the below command to add the missing modules and visiting this page again.
+    </p> <p><b style='font-size:1.2rem'>
+    <i style='color:gray'>composer require -W ";
     if($starterKit['acquia_cms_demo_content']){
       $form[$form_name]['requirement_message_demo_content'] = [
           '#type' => 'item',
-          '#markup' => '<p>' . $this->t("It seems that the following modules are missing from the codebase. We suggest running the below command to add the missing modules and visiting this page again. Use 'composer require -W {$starterKit['acquia_cms_demo_content']}'") . '</p>',
+          '#markup' => $this->t($message . "{$service->getMissingModulesCommand($starterKit['acquia_cms_demo_content'])}" . '</i></b></p></div>'),
           '#states' => [
             'visible' => [
               ':input[name="demo"]' => ['value' => 'Yes'],
+              ':input[name="content_model"]' => ['value' => 'Yes'],
             ],
           ],
       ];
     }
-    $message = "<p>It seems that the following modules are missing from the codebase.</p> <p>We suggest running the below command to add the missing modules and visiting this page again.</p> Use 'composer require -W ";
-    if($starterKit['acquia_cms_content_model']){
-      $form[$form_name]['requirement_message_content_model'] = [
+    if($starterKit['acquia_cms_demo_content']){
+      $form[$form_name]['requirement_message_demo_no_content_model'] = [
           '#type' => 'item',
-          '#markup' => '<p>' . $this->t($message . "{$starterKit['acquia_cms_demo_content']}'") . '</p>',
+          '#markup' => $this->t($message . "{$service->getMissingModulesCommand($starterKit['acquia_cms_demo_content'])}" . '</i></b></p></div>'),
           '#states' => [
             'visible' => [
               ':input[name="demo"]' => ['value' => 'Yes'],
@@ -115,7 +118,7 @@ class StarterKitConfigForm extends AcquiaCMSStarterKitBase {
     if($starterKit['acquia_cms_content_model']){
       $form[$form_name]['requirement_message_content_model'] = [
           '#type' => 'item',
-          '#markup' => '<p>' . $this->t($message . "{$starterKit['acquia_cms_content_model']}'") . '</p>',
+          '#markup' => $this->t($message . "{$service->getMissingModulesCommand($starterKit['acquia_cms_content_model'])}" . '</i></b></p></div>'),
           '#states' => [
             'visible' => [
               ':input[name="demo"]' => ['!value' => 'Yes'],
@@ -127,7 +130,7 @@ class StarterKitConfigForm extends AcquiaCMSStarterKitBase {
     if($starterKit['acquia_cms_starter_kit_only']){
       $form[$form_name]['requirement_message_starter_kit_only'] = [
           '#type' => 'item',
-          '#markup' => '<p>' . $this->t($message . "{$starterKit['acquia_cms_starter_kit_only']}'") . '</p>',
+          '#markup' => $this->t($message . "{$service->getMissingModulesCommand($starterKit['acquia_cms_starter_kit_only'])}" . '</i></b></p></div>'),
           '#states' => [
             'visible' => [
               ':input[name="demo"]' => ['!value' => 'Yes'],
@@ -158,6 +161,7 @@ class StarterKitConfigForm extends AcquiaCMSStarterKitBase {
     $missingModules = $service->getMissingModules($starter_kit, $starter_kit_demo, $starter_kit_content_model);
     if(!$missingModules){
       $this->state->set('show_starter_kit_modal', FALSE);
+      $this->state->set('starter_kit_wizard_completed', TRUE);
       $service->enableModules($starter_kit, $starter_kit_demo, $starter_kit_content_model);
       $this->messenger()->addStatus('The required starter kit has been installed. Also, the related modules & themes have been enabled.');
     }

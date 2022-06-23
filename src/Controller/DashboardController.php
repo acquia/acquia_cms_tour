@@ -113,11 +113,16 @@ final class DashboardController extends ControllerBase {
     $show_welcome_dialog = $this->state->get('show_welcome_modal', TRUE);
     $show_wizard_modal = $this->state->get('show_wizard_modal', TRUE);
     $wizard_completed = $this->state->get('wizard_completed', FALSE);
+    $starter_kit_wizard_completed = $this->state->get('starter_kit_wizard_completed', FALSE);
     $starter_kit = $this->state->get('starter_kit', FALSE);
     $selected_starter_kit = $this->state->get('acquia_cms.starter_kit');
     $hide_starter_kit_intro_dialog = $this->state->get('hide_starter_kit_intro_dialog');
     $starter_link_url = Url::fromRoute('acquia_cms_tour.starter_kit_welcome_modal_form');
     $link_url = Url::fromRoute('acquia_cms_tour.welcome_modal_form');
+    $service = \Drupal::service('acquia_cms_tour.starter_kit');
+    $acquia_cms_enterprise_low_code = $service->getMissingModules('acquia_cms_enterprise_low_code');
+    $acquia_cms_community = $service->getMissingModules('acquia_cms_community');
+    $acquia_cms_headless = $service->getMissingModules('acquia_cms_headless');
     if (!$show_welcome_dialog) {
       $link_url = Url::fromRoute('acquia_cms_tour.installation_wizard');
     }
@@ -137,7 +142,7 @@ final class DashboardController extends ControllerBase {
         ]),
       ],
     ]);
-    if(!$show_starter_kit_modal){
+    if(!$starter_kit_wizard_completed){
       $starter_link_url->setOptions([
         'attributes' => [
           'class' => [
@@ -159,6 +164,7 @@ final class DashboardController extends ControllerBase {
         '#title' => $this->t('Starter kit set-up'),
         '#url' => $starter_link_url,
       ];
+      $form['starter_kit_wizard_completed'] = $starter_kit_wizard_completed;
     }
 
     // Delegate building each section using plugin class.
@@ -210,6 +216,9 @@ final class DashboardController extends ControllerBase {
         'wizard_completed' => $wizard_completed,
         'selected_starter_kit' => $selected_starter_kit,
         'show_starter_kit_modal' => $show_starter_kit_modal,
+        'acquia_cms_enterprise_low_code' => $acquia_cms_enterprise_low_code,
+        'acquia_cms_community' => $acquia_cms_community,
+        'acquia_cms_headless' => $acquia_cms_headless,
       ],
     ];
     return $build;

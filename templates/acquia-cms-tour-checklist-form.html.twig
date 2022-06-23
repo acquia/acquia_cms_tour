@@ -33,8 +33,12 @@
       </h3>
     {% endif %}
   </div>
-  <div class="help-text">{{ form.starter_help_text }}</div>
-  <div class="starter-wizard">{{ form.starter_modal_link }}</div>
+  {% if form.starter_help_text %}
+    <div class="help-text">{{ form.starter_help_text }}</div>
+  {% endif %}
+  {% if form.starter_modal_link %}
+    <div class="starter-wizard">{{ form.starter_modal_link }}</div>
+  {% endif %}
   <div class="wizard">{{ form.modal_link }}</div>
 </div>
 
