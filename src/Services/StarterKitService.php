@@ -156,7 +156,7 @@ class StarterKitService {
   }
 
   /**
-   * Handler for enabling modules.
+   * Handler for missing modules.
    *
    * @param string $starter_kit
    *   Variable holding the starter kit selected.
@@ -168,15 +168,23 @@ class StarterKitService {
   public function getMissingModules(string $starter_kit, string $demo_question = NULL, string $content_model = NULL) {
     $modulesAndThemes = \Drupal::service('acquia_cms_tour.starter_kit')->getModulesAndThemes($starter_kit, $demo_question, $content_model);
     $modules = $modulesAndThemes['enableModules'];
-    \Drupal::logger('acms modules')->info('<pre>'.print_r($modules,TRUE).'</pre>');
     $moduleList = array_keys(\Drupal::service('extension.list.module')->getList());
     $missingModules = implode(', ',array_diff($modules,$moduleList)) ?? '';
-    \Drupal::logger('acms modules')->info('<pre>'.print_r($missingModules,TRUE).'</pre>');
-    if($missingModules){
-      $missingModules = 'drupal/' . $missingModules;
-      $missingModules = str_replace(', ',' drupal/',$missingModules);
-    }
     return $missingModules;
+  }
+
+  /**
+   * Handler for Missing Modules Command modules.
+   *
+   * @param array $missing_modules
+   *   Variable holding the starter kit selected.
+   */
+  public function getMissingModulesCommand(string $missing_modules) {
+    if($missing_modules){
+      $missing_modules = 'drupal/' . $missing_modules;
+      $missing_modules = str_replace(', ',' drupal/',$missing_modules);
+    }
+    return $missing_modules;
   }
 
 }

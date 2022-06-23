@@ -128,14 +128,12 @@
 .section-top .help-text {
   width: 80%;
 }
-.section-top .wizard {
-  right: 11rem;
+.section-top .starter-wizard, .section-top .wizard {
+  right: 2.5rem;
   position: absolute;
-  margin-right: 15px;
 }
-.section-top .starter-wizard {
-  right: 2.75rem;
-  position: absolute;
+.section-top .starter-wizard + .wizard {
+  right: 11.5rem;
 }
 
 @media screen and (max-width: 767px) {

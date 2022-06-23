@@ -50,6 +50,17 @@ class StarterKitSelectionForm extends AcquiaCMSStarterKitBase {
     // different features (Site Studio and Place nodes). Site Studio is always
     // enabled in ACMS, but Place may not.
     // Initialize an empty array
+    $service = \Drupal::service('acquia_cms_tour.starter_kit');
+    $starter_kit = $this->state->get('acquia_cms.starter_kit');
+    $missingModules = [
+      'acquia_cms_enterprise_low_code' => $service->getMissingModules('acquia_cms_enterprise_low_code'),
+      'acquia_cms_community' => $service->getMissingModules('acquia_cms_community'),
+      'acquia_cms_headless' => $service->getMissingModules('acquia_cms_headless'),
+    ];
+    $defaultStarterKit = 'acquia_cms_community';
+    if(!$missingModules['acquia_cms_enterprise_low_code']){
+      $defaultStarterKit = 'defaultStarterKit';
+    }
     $form_name = $this->form_name;
     $rows = [];
     $header = [
@@ -97,10 +108,48 @@ class StarterKitSelectionForm extends AcquiaCMSStarterKitBase {
     $form[$form_name]['message']['starter_kit'] = [
       '#type' => 'select',
       '#options' => $starter_kit_options,
-      '#default_value' => $this->state->get('acquia_cms.starter_kit'),
+      '#default_value' => $this->state->get('acquia_cms.starter_kit') ?? $defaultStarterKit,
       '#prefix' => '<div class= "dashboard-fields-wrapper">',
       '#suffix' => "</div>",
     ];
+    $message = "<div class='messages messages--error'><p>It seems that the
+    following modules are missing from the codebase.</p> <p>We suggest running
+    the below command to add the missing modules and visiting this page again.
+    </p> <p><b style='font-size:1.2rem'>
+    <i style='color:gray'>composer require -W ";
+    if($missingModules['acquia_cms_enterprise_low_code']){
+      $form[$form_name]['requirement_message_low_code'] = [
+          '#type' => 'item',
+          '#markup' => $this->t($message . "{$service->getMissingModulesCommand($missingModules['acquia_cms_enterprise_low_code'])}" . '</i></b></p></div>'),
+          '#states' => [
+            'visible' => [
+              ':input[name="starter_kit"]' => ['value' => 'acquia_cms_enterprise_low_code'],
+            ],
+          ],
+      ];
+    }
+    if($missingModules['acquia_cms_community']){
+      $form[$form_name]['requirement_message_community'] = [
+          '#type' => 'item',
+          '#markup' => $this->t($message . "{$service->getMissingModulesCommand($missingModules['acquia_cms_community'])}" . '</i></b></p></div>'),
+          '#states' => [
+            'visible' => [
+              ':input[name="starter_kit"]' => ['value' => 'acquia_cms_community'],
+            ],
+          ],
+      ];
+    }
+    if($missingModules['acquia_cms_headless']){
+      $form[$form_name]['requirement_message_hedless'] = [
+          '#type' => 'item',
+          '#markup' => $this->t($message . "{$service->getMissingModulesCommand($missingModules['acquia_cms_headless'])}" . '</i></b></p></div>'),
+          '#states' => [
+            'visible' => [
+              ':input[name="starter_kit"]' => ['value' => 'acquia_cms_headless'],
+            ],
+          ],
+      ];
+    }
     $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
     return $form;
   }
