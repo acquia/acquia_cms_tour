@@ -36,3 +36,11 @@ acquia_cms_tour.installation_wizard:
     _form: 'Drupal\acquia_cms_tour\Form\InstallationWizardForm'
   requirements:
     _permission: 'access content'
+
+acquia_cms_tour.selection_wizard:
+  path: '/acquia-cms-tour/starter-kit-selection-wizard'
+  defaults:
+    _title: 'Acquia CMS Installation wizard'
+    _form: 'Drupal\acquia_cms_tour\Form\StarterKitSelectionWizardForm'
+  requirements:
+    _permission: 'access content'

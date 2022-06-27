@@ -96,6 +96,11 @@
   font-size: 28px;
   font-weight: bold;
 }
+.acms-starter-kit-wizard .acquia-cms-starter-kit-wizard .title-wrapper .step-title {
+  text-align: center;
+  font-size: 38px;
+  font-weight: bold;
+}
 .acms-installation-wizard .acquia-cms-tour-installation-wizard .title-wrapper .req-markup {
   font-size: 14px;
   font-weight: normal;
@@ -147,7 +152,6 @@ acms-installation-wizard .ui-dialog-buttonset button {
   background-color: #f0f5fd;
   color: #0036b1;
 }
-
 @media screen and (max-width: 767px) {
   .acms-installation-wizard .acquia-cms-tour-installation-wizard {
     flex-direction: column;

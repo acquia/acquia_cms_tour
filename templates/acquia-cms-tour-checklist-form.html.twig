@@ -23,25 +23,22 @@
     {% else %}
       <h3>
         <i>
-          {{ "It seems like you have installed minimal Acquia CMS, which does not have any specific configurations. You are all set. Once you download & enable any of the modules supported by the wizard, they should start appearing here. Ex:"|t }}
+          {{ "It seems you've installed Acquia CMS using the Acquia Cloud interface or Acquia Cloud Site Factory interface. For that reason, a minimal profile has been installed. For additional functionality, please select one of the starter kits from the wizard and the corresponding modules will be installed."|t }}
         </i>
       </h3>
-      <ul>
-        <li><a href="https://www.drupal.org/project/google_analytics">Google Analytics</a></li>
-        <li><a href="https://www.drupal.org/project/geocoder">Geocoder</a></li>
-        <li><a href="https://www.drupal.org/project/recaptcha">reCAPTCHA</a></li>
-        <li><a href="https://www.drupal.org/project/acquia_telemetry">Acquia Telemetry</a></li>
-        <li><a href="https://github.com/acquia/cohesion">Site Studio</a> etc.</li>
-      </ul>
       <h3>
         <i>
-          {{ "Meanwhile, You can start setting up the Starter kit by clicking on button - Starter kit set-up (if not done already)."|t }}
+          {{ "If required, you can install additional modules later using the "}}<a href="{{ path('system.modules_list') }}">{{"Extend"|t}}</a>{{" page."|t }}
         </i>
       </h3>
     {% endif %}
   </div>
-  <div class="help-text">{{ form.starter_help_text }}</div>
-  <div class="starter-wizard">{{ form.starter_modal_link }}</div>
+  {% if form.starter_help_text %}
+    <div class="help-text">{{ form.starter_help_text }}</div>
+  {% endif %}
+  {% if form.starter_modal_link %}
+    <div class="starter-wizard">{{ form.starter_modal_link }}</div>
+  {% endif %}
   <div class="wizard">{{ form.modal_link }}</div>
 </div>
 
