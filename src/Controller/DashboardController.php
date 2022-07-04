@@ -109,6 +109,7 @@ final class DashboardController extends ControllerBase {
     ];
     $total = 0;
     $completed = 0;
+    $existing_site_acquia_cms = $this->state->get('existing_site_acquia_cms', FALSE);
     $show_starter_kit_modal = \Drupal::request()->get('show_starter_kit_modal') ?? FALSE;
     $show_welcome_dialog = $this->state->get('show_welcome_modal', TRUE);
     $show_wizard_modal = $this->state->get('show_wizard_modal', TRUE);
@@ -142,7 +143,7 @@ final class DashboardController extends ControllerBase {
         ]),
       ],
     ]);
-    if(!$starter_kit_wizard_completed){
+    if(!$existing_site_acquia_cms && !$starter_kit_wizard_completed){
       $starter_link_url->setOptions([
         'attributes' => [
           'class' => [
@@ -216,6 +217,7 @@ final class DashboardController extends ControllerBase {
         'wizard_completed' => $wizard_completed,
         'selected_starter_kit' => $selected_starter_kit,
         'show_starter_kit_modal' => $show_starter_kit_modal,
+        'existing_site_acquia_cms' => $existing_site_acquia_cms,
         'acquia_cms_enterprise_low_code' => $acquia_cms_enterprise_low_code,
         'acquia_cms_community' => $acquia_cms_community,
         'acquia_cms_headless' => $acquia_cms_headless,
