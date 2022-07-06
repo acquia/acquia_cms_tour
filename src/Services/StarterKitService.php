@@ -2,6 +2,7 @@
 
 namespace Drupal\acquia_cms_tour\Services;
 
+use Drupal\acquia_cms_common\Services\AcmsUtilityService;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeInstallerInterface;
@@ -33,6 +34,13 @@ class StarterKitService {
   protected $configFactory;
 
   /**
+   * The acms utility service.
+   *
+   * @var \Drupal\acquia_cms_common\Services\AcmsUtilityService
+   */
+  protected $acmsUtilityService;
+
+  /**
    * Constructs a new AcmsService object.
    *
    * @param \Drupal\Core\Extension\ModuleInstallerInterface $moduleHandler
@@ -41,14 +49,18 @@ class StarterKitService {
    *   The ThemeInstallerInterface.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    *   The config factory.
+   * @param \Drupal\acquia_cms_common\Services\AcmsUtilityService $acms_utility_service
+   *   The acms utility service.
    */
   public function __construct(
-    ModuleInstallerInterface $moduleInstaller,
-    ThemeInstallerInterface $themeInstaller,
-    ConfigFactoryInterface $config_factory) {
+  ModuleInstallerInterface $moduleInstaller,
+  ThemeInstallerInterface $themeInstaller,
+  ConfigFactoryInterface $config_factory,
+  AcmsUtilityService $acms_utility_service) {
     $this->moduleInstaller = $moduleInstaller;
     $this->themeInstaller = $themeInstaller;
     $this->configFactory = $config_factory;
+    $this->acmsUtilityService = $acms_utility_service;
   }
 
   /**
@@ -62,10 +74,21 @@ class StarterKitService {
    *   Variable holding the content model option selected.
    */
   public function enableModules(string $starter_kit, string $demo_question = NULL, string $content_model = NULL) {
+    // putenv('UNSET_COHESION_SYNC=1');
+    $batch = [
+      'title' => t('Enabling Modules...'),
+      'operations' => [],
+      'init_message' => t(' process is starting.'),
+      'progress_message' => t('Processed @current out of @total. Estimated time: @estimate.'),
+      'error_message' => t('The process has encountered an error....'),
+    ];
     $modulesAndThemes = $this->getModulesAndThemes($starter_kit, $demo_question, $content_model);
     if (!empty($modulesAndThemes['enableModules'])) {
-      $this->moduleInstaller->install($modulesAndThemes['enableModules']);
+      foreach($modulesAndThemes['enableModules'] as $module) {
+        $batch['operations'][] = ['\Drupal\acquia_cms_tour\Services\StarterKitService::enableModule', [$module]];
+      }
     }
+    batch_set($batch);
     foreach ($modulesAndThemes['enableThemes'] as $key => $theme) {
       $this->themeInstaller->install([$theme]);
     }
@@ -77,6 +100,18 @@ class StarterKitService {
       ->getEditable('system.theme')
       ->set('admin', $modulesAndThemes['enableThemes']['admin'])
       ->save();
+    // Import site studio packages.
+    // $this->acmsUtilityService->rebuildSiteStudio();
+  }
+
+  /**
+   * Handler for enabling modules.
+   *
+   * @param string $module
+   *   Variable holding the starter kit selected.
+   */
+  public static function enableModule(string $module) {
+    \Drupal::service('module_installer')->install([$module]);
   }
 
   /**
