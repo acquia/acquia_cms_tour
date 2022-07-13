@@ -3,10 +3,11 @@ drupal/acquia_cms_tour:
 
 # Do not install acquia_cms and Lightning modules.
 acquia/acquia_cms: ~
+acquia/blt: ~
 drupal/lightning_core: ~
 drupal/lightning_api: ~
 drupal/lightning_layout: ~
+drupal/lightning_media: ~
 drupal/lightning_page: ~
 drupal/lightning_search: ~
-drupal/lightning_media: ~
 drupal/lightning_workflow: ~
