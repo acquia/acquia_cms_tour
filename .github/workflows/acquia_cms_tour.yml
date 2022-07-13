@@ -1,0 +1,148 @@
+name: Acquia CMS Tour CI
+on:
+  push:
+    branches: [ develop, main, ACMS* ]
+    paths-ignore:
+      - README.md
+  pull_request:
+    branches: [ develop ]
+    paths-ignore:
+      - README.md
+jobs:
+  STATIC_CODE_ANALYSIS:
+    name: "Static Code Analysis"
+    runs-on: ubuntu-latest
+    env:
+      ORCA_SUT_NAME: drupal/acquia_cms_tour
+      ORCA_SUT_BRANCH: develop
+      ORCA_VERSION: v3.18.0
+      ORCA_PACKAGES_CONFIG_ALTER: ../acquia_cms_tour/tests/packages_alter.yml
+      ORCA_ENABLE_NIGHTWATCH: "FALSE"
+      ORCA_PHPCS_STANDARD: AcquiaDrupalStrict
+      COMPOSER_PROCESS_TIMEOUT: 1800
+      ORCA_JOB: ${{ matrix.orca-job }}
+    strategy:
+      matrix:
+        # The standard ORCA jobs provide broad out-of-the-box coverage.
+        # @see https://github.com/acquia/orca/blob/main/docs/understanding-orca.md#continuous-integration
+        orca-job:
+          - STATIC_CODE_ANALYSIS
+          - STRICT_DEPRECATED_CODE_SCAN
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: xdebug
+      - name: Download ORCA
+        run: composer create-project --no-dev --ignore-platform-req=php acquia/orca ../orca "$ORCA_VERSION"
+      - name: Set Minimum Stability
+        run: |
+          composer 'config' 'minimum-stability' 'dev'
+          composer 'config' 'prefer-stable' 'true'
+      - name: Allow config
+        run: |
+          composer 'config' --no-plugins 'allow-plugins.dealerdirect/phpcodesniffer-composer-installer' 'true'
+          composer 'config' --no-plugins 'allow-plugins.phpro/grumphp-shim' 'true'
+      - name: Run GrumpPHP tests
+        run: |
+          composer install
+          ./vendor/bin/grumphp run
+      - name: Before Install
+        run: ../orca/bin/ci/before_install.sh
+      - name: Install
+        run: ../orca/bin/ci/install.sh
+      - name: Before script
+        run: ../orca/bin/ci/before_script.sh
+      - name: Script
+        run: ../orca/bin/ci/script.sh
+      - name: After script
+        run: |
+          ../orca/bin/ci/after_success.sh
+          ../orca/bin/ci/after_failure.sh
+          ../orca/bin/ci/after_script.sh
+  VERIFY_ACQUIA_CMS_TOUR_ON_DRUPAL_PROJECT:
+    if: ${{ github.event_name == 'push' }}
+    name: "Verify acquia_cms_tour on acquia/drupal-recommended-project"
+    runs-on: ubuntu-latest
+    env:
+      ORCA_SUT_NAME: drupal/acquia_cms_tour
+      ORCA_SUT_BRANCH: develop
+      ORCA_VERSION: v3.18.0
+      ORCA_PACKAGES_CONFIG_ALTER: ../acquia_cms_tour/tests/packages_alter.yml
+      ORCA_ENABLE_NIGHTWATCH: "FALSE"
+      ORCA_JOB: ${{ matrix.orca-job }}
+      DB_DATABASE: drupal
+      DB_USER: drupal
+      DB_PASSWORD: drupal
+      COMPOSER_PROCESS_TIMEOUT: 1800
+      CI: TRUE
+    strategy:
+      matrix:
+        core-version: ["CURRENT"]
+        orca-job:
+          - ISOLATED_TEST_ON_CURRENT
+        base-url:
+          - https://127.0.0.1:8080
+    steps:
+      - uses: actions/checkout@v3
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          coverage: xdebug
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
+          mysql -e 'SHOW DATABASES;' -uroot -proot
+          mysql -e 'CREATE USER "drupal"@"localhost" IDENTIFIED BY "drupal";' -uroot -proot
+          mysql -e 'GRANT ALL PRIVILEGES ON *.* TO "drupal"@"localhost" WITH GRANT OPTION;' -uroot -proot
+          mysql -e 'FLUSH PRIVILEGES;' -uroot -proot
+          mysql -e 'SHOW GRANTS FOR "drupal"@"localhost";' -uroot -proot
+      - name: Allow config
+        run: |
+          composer 'config' --no-plugins 'allow-plugins.dealerdirect/phpcodesniffer-composer-installer' 'true'
+          composer 'config' --no-plugins 'allow-plugins.phpro/grumphp-shim' 'true'
+      - name: Set Minimum Stability
+        run: |
+          composer 'config' 'minimum-stability' 'dev'
+          composer 'config' 'prefer-stable' 'true'
+      - name: Download Composer Dependencies
+        run: |
+          composer install
+          composer require drush/drush
+          composer require weitzman/drupal-test-traits:^1.6
+      - name: Download ORCA
+        run: |
+          cd ..
+          composer create-project --no-dev --ignore-platform-req=php acquia/orca orca "$ORCA_VERSION"
+          cd -
+      # Install ORCA and prepare the environment.
+      - name: Before install
+        run: ../orca/bin/ci/before_install.sh
+
+      # Create the test fixture and place the SUT.
+      - name: Install
+        run: ../orca/bin/ci/install.sh
+
+      # Display details about the fixture.
+      - name: Before script
+        run: ../orca/bin/ci/before_script.sh
+
+      # Run the test script.
+      - name: Script
+        run: ../orca/bin/ci/script.sh
+
+      # Perform final, post-script tasks.
+      - name: After script
+        run: ../orca/bin/ci/after_script.sh
+
+      # Conditionally send code coverage data to Coveralls.
+      - name: After success
+        if: ${{ success() }}
+        run: ../orca/bin/ci/after_success.sh
+
+      # Display debugging information in case of failure.
+      - name: After failure
+        if: ${{ failure() }}
+        run: ../orca/bin/ci/after_failure.sh
