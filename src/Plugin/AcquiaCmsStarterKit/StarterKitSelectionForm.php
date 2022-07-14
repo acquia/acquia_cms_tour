@@ -2,7 +2,7 @@
 
 namespace Drupal\acquia_cms_tour\Plugin\AcquiaCmsStarterKit;
 
-use Drupal\acquia_cms_tour\Form\AcquiaCMSStarterKitBase;
+use Drupal\acquia_cms_tour\Form\AcquiaCmsStarterKitBase;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   weight = 1
  * )
  */
-class StarterKitSelectionForm extends AcquiaCMSStarterKitBase {
+class StarterKitSelectionForm extends AcquiaCmsStarterKitBase {
 
   /**
    * Provides module name.

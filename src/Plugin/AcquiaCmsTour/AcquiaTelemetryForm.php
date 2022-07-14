@@ -2,7 +2,7 @@
 
 namespace Drupal\acquia_cms_tour\Plugin\AcquiaCmsTour;
 
-use Drupal\acquia_cms_tour\Form\AcquiaCMSDashboardBase;
+use Drupal\acquia_cms_tour\Form\AcquiaCmsDashboardBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   weight = 1
  * )
  */
-class AcquiaTelemetryForm extends AcquiaCMSDashboardBase {
+class AcquiaTelemetryForm extends AcquiaCmsDashboardBase {
 
   /**
    * The module installer.
